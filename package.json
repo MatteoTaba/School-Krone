@@ -1,0 +1,17 @@
+{
+  "name": "skr",
+  "version": "1.0.0",
+  "description": "School Krone",
+  "main": "truffle-config.js",
+  "scripts": {
+    "dev": "lite-server"
+  },
+  "author": "Matteo",
+  "license": "ISC",
+  "devDependencies": {
+    "lite-server": "^2.6.1"
+  },
+  "dependencies": {
+    "jquery": "^3.6.0"
+  }
+}

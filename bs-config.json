@@ -1,0 +1,4 @@
+//Directories we want to expose to lite-server: src folder and contracts
+{
+	"server": { "baseDir": ["./src", "./build/contracts"] }
+}
