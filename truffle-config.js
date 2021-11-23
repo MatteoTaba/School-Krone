@@ -42,6 +42,7 @@ module.exports = {
     // options below to some value.
     //
     //How we connect to our local blockchain
+    //NB: file bs-config.js includes the directories we want to expose to lite-server: src folder and contracts
     development: {
       host: "127.0.0.1",     // Localhost (default: none)
       port: 7545,            // Ethereum port in Ganache (default: none)
