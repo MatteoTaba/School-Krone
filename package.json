@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "School Krone",
   "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
   "scripts": {
     "dev": "lite-server"
   },
