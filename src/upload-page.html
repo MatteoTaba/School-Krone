@@ -1,5 +1,7 @@
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible", content="IE=edge">
@@ -12,8 +14,6 @@
 <body>
     <div class="container-fluid" id="cont" style="height:100vh;">
         <div class = "row mt-5">
-        </div>
-        <div class = "row mt-5">
             <div class="card card-block" style="margin: 0 auto; width:50%;" >
                 <div class="card-header bg-info text-white font_bold" align="center">UPLOAD YOUR FILE</div>
                 <div class="card-body">
@@ -25,14 +25,31 @@
                         </div>
                         <div class="form-group">
                             <label for="file"> Choose the file to upload: </label>
-                            <input type="file" id="myFile" /> <br /><br />
-                            <input type="submit" value="Submit" />
+                            <form onSubmit="App.onSubmit()">
+                                <input type="file" id="myFile"/> 
+                               <script src="https://unpkg.com/react@17.0.2/umd/react.development.js" crossorigin> 
+                                    console.log('test');
+                                    const fileSelector = document.getElementById('myFile');
+                                    fileSelector.addEventListener('change', (event) => {
+                                        const file = event.target.files[0];
+                                        const reader = new window.FileReader();
+                                        reader.readAsArrayBuffer(file);
+                                        console.log(file);
+                                        reader.onloadend = () => {
+                                            this.setState({ buffer: Buffer.from(reader.result) });
+                                            console.log('buffer', this.state.buffer);
+                                        }
+                                    });
+                                </script>
+                                <br/>
+                                <br/>
+                                <input type="submit" value="Submit"/>
+                            </form>
                         </div>
                     </form>
                 </div>
-            </div>
-            </div>
-        </div>
+            </div>            
+        </div>    
     </div>
 <!-- DEPENDENCIES -->
 
@@ -46,8 +63,14 @@
    
    <!-- Library that gives the ability to interact with our contracts using JavaScript-->
     <script src="js/truffle-contract.min.js"></script>
-   
+
+
+    <script type="module" src="https://unpkg.com/react@17.0.2/umd/react.development.js" crossorigin> </script>
+    <script type="module" src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js" crossorigin></script>
+
+
    <!-- Our client-side JavaScript part -->
     <script src="js/app.js"></script>
+
 </body>
 </html>
