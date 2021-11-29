@@ -26,21 +26,7 @@
                         <div class="form-group">
                             <label for="file"> Choose the file to upload: </label>
                             <form onSubmit="App.onSubmit()">
-                                <input type="file" id="myFile"/> 
-                               <script src="https://unpkg.com/react@17.0.2/umd/react.development.js" crossorigin> 
-                                    console.log('test');
-                                    const fileSelector = document.getElementById('myFile');
-                                    fileSelector.addEventListener('change', (event) => {
-                                        const file = event.target.files[0];
-                                        const reader = new window.FileReader();
-                                        reader.readAsArrayBuffer(file);
-                                        console.log(file);
-                                        reader.onloadend = () => {
-                                            this.setState({ buffer: Buffer.from(reader.result) });
-                                            console.log('buffer', this.state.buffer);
-                                        }
-                                    });
-                                </script>
+                                <input type="file" id="myFile" onChange="App.captureFile()" /> 
                                 <br/>
                                 <br/>
                                 <input type="submit" value="Submit"/>
@@ -65,12 +51,12 @@
     <script src="js/truffle-contract.min.js"></script>
 
 
-    <script type="module" src="https://unpkg.com/react@17.0.2/umd/react.development.js" crossorigin> </script>
-    <script type="module" src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js" crossorigin></script>
+    <!--<script type="module" src="https://unpkg.com/react@17.0.2/umd/react.development.js" crossorigin> </script>
+    <script type="module" src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js" crossorigin></script> -->
 
 
    <!-- Our client-side JavaScript part -->
-    <script src="js/app.js"></script>
+    <script type="module" src="js/App.js"></script>
 
 </body>
 </html>
