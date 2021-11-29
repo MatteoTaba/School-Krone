@@ -1,7 +1,7 @@
 /*
  * Client-side JavaScript part
  */
- App = {
+App = {
 
     constructor() {
         //these two lines allow to reference "this" keyword inside of captureFile and onSubmit functions
