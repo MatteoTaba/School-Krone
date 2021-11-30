@@ -24,12 +24,16 @@
                             <input type="text" class="form-control" id="address" placeholder="Wallet Address" name="address" maxlength="42">
                         </div>
                         <div class="form-group">
-                            <label for="file"> Choose the file to upload: </label>
-                            <form onSubmit="App.onSubmit()">
-                                <input type="file" id="myFile" onChange="App.captureFile()" /> 
-                                <br/>
-                                <br/>
-                                <input type="submit" value="Submit"/>
+                            <form>
+                                <label class="file-label">
+                                    <span class="file-label"> Choose the file to upload: </span>
+                                    <input type="file" id="myFile" class="file-input"/>
+                                    <span id="inputFileName" class="file-name"></span>
+                                </label>
+                                <br>
+                                <input type="submit" value="Submit" id="submitBtn">
+                                <div id="errorMsg" style="color:red;"></div>
+                                <div id="result"></div>
                             </form>
                         </div>
                     </form>
@@ -45,13 +49,13 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 
     <!-- Library that allows our client-side application (token exchange website) to talk to the blockchain-->
-    <script src="js/web3.min.js"></script>
+    <script src="web3.min.js"></script>
    
    <!-- Library that gives the ability to interact with our contracts using JavaScript-->
-    <script src="js/truffle-contract.min.js"></script>
+    <script src="truffle-contract.min.js"></script>
 
    <!-- Our client-side JavaScript part -->
-    <script src="js/App.js"></script>
+    <script src="app.js"></script>
 
 </body>
 </html>
