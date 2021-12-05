@@ -7,25 +7,24 @@
     "test": "test"
   },
   "scripts": {
-    "dev": "lite-server"
-  },
-  "author": "Matteo",
-  "license": "ISC",
-  "devDependencies": {
-    "lite-server": "^2.6.1"
-  },
-  "dependencies": {
-    "ipfs": "^0.60.2",
-    "ipfs-http-client": "^54.0.2",
-    "jquery": "^3.6.0"
+    "test": "test"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MatteoTaba/School-Krone.git"
   },
-  "keywords": [],
+  "author": "Matteo",
+  "license": "ISC",
   "bugs": {
     "url": "https://github.com/MatteoTaba/School-Krone/issues"
   },
-  "homepage": "https://github.com/MatteoTaba/School-Krone#readme"
+  "homepage": "https://github.com/MatteoTaba/School-Krone#readme",
+  "dependencies": {
+    "ipfs": "^0.60.2",
+    "ipfs-http-client": "^54.0.2",
+    "npm": "^8.2.0"
+  },
+  "devDependencies": {
+    "parcel": "^2.0.1"
+  }
 }
