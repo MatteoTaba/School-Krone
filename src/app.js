@@ -1,7 +1,7 @@
 /*
  * Client-side JavaScript part
  */
-//import 'regenerator-runtime/runtime';
+import 'regenerator-runtime/runtime';
 
 import IPFS from 'ipfs'; 
 import regeneratorRuntime from "regenerator-runtime";
