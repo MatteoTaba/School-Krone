@@ -1,15 +1,14 @@
 /*
  * Client-side JavaScript part
  */
-import 'regenerator-runtime/runtime';
 
-import IPFS from 'ipfs'; 
-import regeneratorRuntime from "regenerator-runtime";
+
+//import IPFS from '/ipfs'; 
 
 
 let fileToUpload = null;
 //Before this make sure to run npm install ipfs-http-client
-const ipfsClient = require('ipfs-http-client');
+const ipfsClient = require('/ipfs-http-client');
 //Connect to the daemon API server. Now we can start executing commands on the ipfs object to interact with the network
 const ipfs=ipfsClient('http://localhost:5001');
 
