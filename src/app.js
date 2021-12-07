@@ -2,17 +2,15 @@
  * Client-side JavaScript part
  */
 
-
-//import IPFS from '/ipfs'; 
-
-
-let fileToUpload = null;
+import regeneratorRuntime from "regenerator-runtime";
 //Before this make sure to run npm install ipfs-http-client
-const ipfsClient = require('/ipfs-http-client');
-//Connect to the daemon API server. Now we can start executing commands on the ipfs object to interact with the network
-const ipfs=ipfsClient('http://localhost:5001');
+//const ipfsClient = require('ipfs-http-client');
+let fileToUpload = null;
 
-ipfs.on('ready', () => {
+//Connect to the daemon API server. Now we can start executing commands on the ipfs object to interact with the network
+//const ipfs=ipfsClient('http://localhost:5001');
+
+/**ipfs.on('ready', () => {
     console.log('Your IPFS node is ready.');
 
     ipfs.version((err, version) => {
@@ -23,7 +21,7 @@ ipfs.on('ready', () => {
         console.log('version: ',version.version)
     });
 });
-
+*/
 document.addEventListener('DOMContentLoaded', e => {
     init();
 });
