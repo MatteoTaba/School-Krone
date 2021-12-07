@@ -2,7 +2,7 @@
  * Client-side JavaScript part
  */
 
-import regeneratorRuntime from "regenerator-runtime";
+//import regeneratorRuntime from "regenerator-runtime";
 //Before this make sure to run npm install ipfs-http-client
 //const ipfsClient = require('ipfs-http-client');
 let fileToUpload = null;
