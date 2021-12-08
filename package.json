@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "test",
-    "start": "parcel src/index.html"
+    "start": "parcel src/index.html",
+    "dev": "lite-server"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,7 @@
   "dependencies": {
     "ipfs": "^0.60.2",
     "ipfs-http-client": "^54.0.2",
+    "lite-server": "^2.6.1",
     "npm": "^8.2.0"
   },
   "devDependencies": {
