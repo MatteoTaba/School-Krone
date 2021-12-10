@@ -2,14 +2,13 @@
   "name": "skr",
   "version": "1.0.0",
   "description": "School Krone",
-  "main": "truffle-config.js",
+  "type": "module",
+  "main": "app.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "test",
-    "start": "parcel src/index.html",
-    "dev": "lite-server"
+    "test": "test"
   },
   "repository": {
     "type": "git",
@@ -22,12 +21,13 @@
   },
   "homepage": "https://github.com/MatteoTaba/School-Krone#readme",
   "dependencies": {
+    "body-parser": "^1.19.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.2.1",
     "ipfs": "^0.60.2",
+    "ipfs-api": "^26.1.2",
     "ipfs-http-client": "^54.0.2",
-    "lite-server": "^2.6.1",
     "npm": "^8.2.0"
-  },
-  "devDependencies": {
-    "parcel": "^2.0.1"
   }
 }
