@@ -23,6 +23,9 @@ contract SKR {
 	//symbol of the token
 	string public symbol = "SKR";
 
+	//ipfs hash which will be saved inside the blockchain
+	string public ipfsHash;
+
 	//transfer event which is triggered when tokens are transferred
 	event Transfer(
 		address indexed _from,
@@ -102,6 +105,19 @@ contract SKR {
 		emit Transfer(_from, _to, _value);
 
 		return true;	
+	}
+
+	//_______________IPFS hash integration_______________//
+
+	//takes a string x as input and stores its value to the ipfsHash variable
+	function sendHash(string memory x) public {
+		ipfsHash = x;
+	}
+
+	/*public function with mutability view, which means it can only view, not modify the Ethereum blockchain’s state and returns 
+	the hash stored in the variable ipfsHash.*/
+	function getHash() public view returns (string memory) {
+		return ipfsHash;
 	}
 
 }
