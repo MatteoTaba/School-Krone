@@ -9,21 +9,18 @@ import bodyParser from'body-parser';
 import fileUpload from 'express-fileupload';
 import { Buffer } from 'buffer';
 
-//library for interacting with the files
+//library for interacting with files
 import fs from 'fs';
 
-//trying to connect to IPFS daemon
+//connect to IPFS daemon using default settings:localhost and port 5001
 var ipfs = ipfsAPI('127.0.0.1', '5001', {protocol: 'http'});
 
-//connect to IPFS daemon using default settings:localhost and port 5001
-
-console.log('Your IPFS node is ready.');
 ipfs.version((err, version) => {
         if(err) {
             console.error('Error getting the IPFS version', err);
             return;
         }
-        console.log('version: ',version.version)
+        console.log('Your IPFS node is ready, version: ',version.version)
     });
 
 const app = express();
@@ -32,28 +29,26 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(fileUpload());
 
-//get request render the page home.ejs
+//get request to render the page home.ejs
 app.get('/', (req, res) => {
     res.render('home');
 });
 
 //post request to upload the file
 app.post('/upload', (req, res) => {
-    //whole file we need
+    //get the file we need
     const file = req.files.file;
-    //file name we get from the body (from the form)
+
+    //file name that we get from the body (from the form)
     const fileName = req.body.fileName;
-    const filePath = 'files/' + fileName;
-    //const test = 'Test';
     console.log('File is ready: ', file.name);
+
+    //set the filePath, it's necessary to create a folder called "files"
+    const filePath = 'files/' + fileName;
     console.log('File path: ', filePath);
 
-    /**
-     * Download the file into our server using the mv function. 
-     * Param: 
-     * filePath, where the file has to be moved 
-     * async(err), callback function with an error
-     * */
+    
+    //Download the file into our server using the mv function. Param: filePath, where the file has to be moved and async(err), callback function with an error
     file.mv(filePath, async(err) => {
         if(err) {
             console.log('Error: failed to download the file');
@@ -64,8 +59,8 @@ app.post('/upload', (req, res) => {
 
         //call the addFile function with the right parameters
         const fileHash = await addFile(fileName, filePath);
-        //console.log('File hash: ', fileHash);
-        //once we have the hash we can delete the file
+
+        //once we have the hash we can delete the file from the files folder
         fs.unlink(filePath, (err) => {
             if(err) console.log(err);
         });
@@ -77,10 +72,14 @@ app.post('/upload', (req, res) => {
 });
 
 const addFile = async (fileName, filePath) => {
+    //convert the file into a buffer, one of the allowed data formats for IPFS
     const fileBuffer = { path: fileName, content: Buffer.from(filePath) };
     console.log('fileBuffer: ', fileBuffer);
+
+    //add the buffer to IPFS
     const filesAdded = await ipfs.add(fileBuffer);
     console.log('your hash: ', filesAdded);
+    
     return filesAdded.hash;
 };
 
