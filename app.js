@@ -15,6 +15,7 @@ import fs from 'fs';
 //connect to IPFS daemon using default settings:localhost and port 5001
 var ipfs = ipfsAPI('127.0.0.1', '5001', {protocol: 'http'});
 
+/**
 //Initialize web3 provider
 initWeb3: function() {
     if(typeof web3 !== 'undefined') {
@@ -25,7 +26,7 @@ initWeb3: function() {
         web3 = new Web3(web3.web3Provider);
     }
 }
-
+*/
 ipfs.version((err, version) => {
         if(err) {
             console.error('Error getting the IPFS version', err);
