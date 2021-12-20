@@ -1,11 +1,11 @@
-/*
- * Client-side JavaScript part
- */
+/**
+ * Client-side Javascript for uploading a file to IPFS.
+ */ 
 
 import { create } from 'ipfs-http-client';
 import ipfsAPI from 'ipfs-api';
-import express from'express';
-import bodyParser from'body-parser';
+import express from 'express';
+import bodyParser from 'body-parser';
 import fileUpload from 'express-fileupload';
 import { Buffer } from 'buffer';
 
@@ -15,18 +15,6 @@ import fs from 'fs';
 //connect to IPFS daemon using default settings:localhost and port 5001
 var ipfs = ipfsAPI('127.0.0.1', '5001', {protocol: 'http'});
 
-/**
-//Initialize web3 provider
-initWeb3: function() {
-    if(typeof web3 !== 'undefined') {
-        const web3Provider = web3.currentProvider;
-        web3 = new Web3(web3.currentProvider);
-    } else {
-        const web3Provider = new Web3.providers.HttpProvider('http://localhost:3000');
-        web3 = new Web3(web3.web3Provider);
-    }
-}
-*/
 ipfs.version((err, version) => {
         if(err) {
             console.error('Error getting the IPFS version', err);
