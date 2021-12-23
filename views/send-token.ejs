@@ -10,4 +10,12 @@
 	<h1> Send token to students </h1>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+<script type="text/javascript">
+    var web3;
+    
+    web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:7545"));
+    console.log(web3)
+    const latestBlockNumber = web3.eth.getBlock("latest")
+    console.log(latestBlockNumber)
+</script>
 </html>
