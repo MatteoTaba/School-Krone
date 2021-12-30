@@ -12,12 +12,13 @@ var web3;
 
 async function initWeb3() {
     if (typeof web3 !== 'undefined') {
-    //If a web3 instance is already provided by Meta Mask.
-    web3 = new Web3(new Web3.currentProvider);
+        //If a web3 instance is already provided by Meta Mask.
+        console.log("DENTRO");
+        web3 = new Web3(new Web3.currentProvider);
     } 
     else {
-    // Specify default instance if no web3 instance provided
-    web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:7545"));
+        //Specify default instance if no web3 instance provided
+        web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:7545"));
     }
 } 
 
@@ -26,8 +27,6 @@ async function getLastBlockNumber() {
     console.log(latestBlockNumber)
     return latestBlockNumber
 }
-//initWeb3();
-//getLastBlockNumber();
 
 const app = express();
 
@@ -36,16 +35,17 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 //get request to render the page send-token.ejs
 app.get('/', (req, res) => {
+    initWeb3();
+    getLastBlockNumber();
     res.render('send-token');
 });
+
 
 app.listen(3000, () => {
     console.log('Server is listening on port 3000');
 });
 
-// import express from 'express';
-// import bodyParser from 'body-parser';
-// sendToken = {
+// const sendToken = {
    
 //     web3Provider: null,
 
@@ -55,14 +55,14 @@ app.listen(3000, () => {
 //     },
 
 //     initWeb3: function() {
-//         if(typeof web3 !== 'undefined') {
+//         //if(typeof web3 !== 'undefined') {
 //             // If a web3 instance is already provided by Meta Mask.
 //             sendToken.web3Provider = web3.currentProvider;
 //             web3 = new Web3(web3.currentProvider);
-//         } else {
+//         //} else {
 //             // Specify default instance if no web3 instance provided
-//             sendToken.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
-//             web3 = new Web3(sendToken.web3Provider);
-//         }
-//     }
+//             //sendToken.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
+//             //web3 = new Web3(sendToken.web3Provider);
+//         //}
+//     }  
 // }
