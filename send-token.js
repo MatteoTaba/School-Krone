@@ -297,17 +297,24 @@ function initContracts() {
 ];
     var contractAddress='0xdf3f210158Cc1ff6910C15BCaB0b851Ac8f38f76';
     var contract= new web3.eth.Contract(contractAbi, contractAddress);
-    var senderAddress='0x23B7241e2859eA79e9ba4b2c89b208cE57B8D63d';
-
+    
     console.log("Contract correctly initiated. Contract address: " + contract.options.address);
 
-    /**contract.methods.balanceOf(senderAddress).call(function(err, res) {
-    if (err) {
-        console.log("An error occured", err);
-        return
-    }
-        console.log("The balance is: ",res)
-    });*/
+    web3.eth.getBalance("0x23B7241e2859eA79e9ba4b2c89b208cE57B8D63d", function(err, result) {
+        if (err) {
+            console.log(err)
+        } else {
+            console.log(web3.utils.fromWei(result, "ether") + " ETH")
+        }
+    })
+
+    // contract.methods.balanceOf("0x23B7241e2859eA79e9ba4b2c89b208cE57B8D63d").call(function(err, res) {
+    // if (err) {
+    //     console.log("An error occured", err);
+    //     return
+    // }
+    //     console.log("The balance is: ",res)
+    // });
 }
 
 //get request to render the page send-token.ejs
@@ -315,6 +322,7 @@ app.get('/', (req, res) => {
     initWeb3();
     getLastBlockNumber();
     initContracts();
+    
     res.render('send-token');
 });
 
@@ -322,25 +330,3 @@ app.get('/', (req, res) => {
 app.listen(3000, () => {
     console.log('Server is listening on port 3000');
 });
-
-// const sendToken = {
-   
-//     web3Provider: null,
-
-//     init: function() {
-//         console.log("App initialized")
-//         return sendToken.initWeb3();
-//     },
-
-//     initWeb3: function() {
-//         //if(typeof web3 !== 'undefined') {
-//             // If a web3 instance is already provided by Meta Mask.
-//             sendToken.web3Provider = web3.currentProvider;
-//             web3 = new Web3(web3.currentProvider);
-//         //} else {
-//             // Specify default instance if no web3 instance provided
-//             //sendToken.web3Provider = new Web3.providers.HttpProvider('http://localhost:7545');
-//             //web3 = new Web3(sendToken.web3Provider);
-//         //}
-//     }  
-// }
