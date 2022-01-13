@@ -120,4 +120,10 @@ contract SKR {
 		return ipfsHash;
 	}
 
+	//function which will manage the token sending
+	function payStudent(address studentAddress, string memory hash, uint256 amount) {
+		transfer(studentAddress, amount);
+	}
+
+
 }
