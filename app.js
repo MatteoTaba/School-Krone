@@ -36,6 +36,10 @@ app.get('/', (req, res) => {
 
 //post request to upload the file
 app.post('/upload', (req, res) => {
+    //get the wallet address
+    const walletAddress = req.body.address;
+    console.log("Wallet address: " + walletAddress);
+
     //get the whole file we need
     const file = req.files.file;
     console.log('File: ', file);
@@ -67,7 +71,7 @@ app.post('/upload', (req, res) => {
         });
 
         //render the upload page with the right accessible parameters
-        res.render('upload', { fileName, fileHashIPFS });
+        res.render('upload', { fileName, fileHashIPFS, walletAddress });
     });
 
 });
