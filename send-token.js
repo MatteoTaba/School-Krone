@@ -19,7 +19,7 @@ async function initWeb3() {
     if (typeof web3 !== 'undefined') {
         //If a web3 instance is already provided by Meta Mask.
         console.log("DENTRO");
-        //web3 = new Web3(new Web3.currentProvider);
+        web3 = new Web3(new Web3.currentProvider);
     } 
     else {
         //Specify default instance if no web3 instance provided

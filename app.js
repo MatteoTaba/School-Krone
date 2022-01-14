@@ -36,19 +36,20 @@ app.get('/', (req, res) => {
 
 //post request to upload the file
 app.post('/upload', (req, res) => {
-    //get the file we need
+    //get the whole file we need
     const file = req.files.file;
+    console.log('File: ', file);
 
     //file name that we get from the body (from the form)
     const fileName = req.body.fileName;
     console.log('File is ready: ', file.name);
 
-    //set the filePath, it's necessary to create a folder called "files"
+    //create the filePath, it's necessary to create a folder called "files"
     const filePath = 'files/' + fileName;
     console.log('File path: ', filePath);
 
     
-    //Download the file into our server using the mv function. Param: filePath, where the file has to be moved and async(err), callback function with an error
+    //download the file into our server using the mv function. Param: filePath, where the file has to be moved and async(err), callback function with an error
     file.mv(filePath, async(err) => {
         if(err) {
             console.log('Error: failed to download the file');
@@ -58,29 +59,33 @@ app.post('/upload', (req, res) => {
         console.log('Successfully download the file');
 
         //call the addFile function with the right parameters
-        const fileHash = await addFile(fileName, filePath);
+        const fileHashIPFS = await addFile(fileName, filePath);
 
         //once we have the hash we can delete the file from the files folder
         fs.unlink(filePath, (err) => {
             if(err) console.log(err);
         });
 
-        //render the upload page with the right parameters
-        res.render('upload', { fileName, fileHash });
+        //render the upload page with the right accessible parameters
+        res.render('upload', { fileName, fileHashIPFS });
     });
 
 });
 
 const addFile = async (fileName, filePath) => {
-    //convert the file into a buffer, one of the allowed data formats for IPFS
-    const fileBuffer = { path: fileName, content: Buffer.from(filePath) };
-    console.log('fileBuffer: ', fileBuffer);
+    //read the content of the file in the specified path. The return value is in the form of one of the allowed data formats to upload a file to IPFS
+    const fileContent = fs.readFileSync(filePath);
+    console.log('File content: ', fileContent);
 
-    //add the buffer to IPFS
-    const filesAdded = await ipfs.add(fileBuffer);
-    console.log('your hash: ', filesAdded);
+    //add the file to IPFS
+    const fileAdded = await ipfs.add({ path: fileName, content: fileContent });
+    console.log('Your file on IPFS: ', fileAdded);
     
-    return filesAdded.hash;
+    //return the CID of the file
+    const fileHash = fileAdded.cid;
+    console.log('Your hash on IPFS: ', fileHash);
+
+    return fileHash;
 };
 
 app.listen(3000, () => {
