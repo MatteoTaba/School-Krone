@@ -1,38 +1,47 @@
-/**
- * Client-side Javascript for sending tokens to students
- */ 
+/*
+    Client-side Javascript for sending tokens to students
+*/ 
+
 import express from 'express';
 import bodyParser from 'body-parser';
 import Web3 from 'web3';
 
-/** Web3 Provider is a server/website running geth or parity node which talks to the Ethereum blockchain. 
- *  To initiate our web3 provider, we’ll instantiate a Web3 instance passing as the constructor the URL of the provider (Ganache).
- */ 
-var web3;
-
+//configuration of express
 const app = express();
-
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 
+var web3;
+
+/*
+    To query the Ethereum blockchain, we will need access to an Ethereum node: with Web3.js we can connect to our own node or an 
+    existing node (we'll use Infura). 
+    Web3.js is a collection of libraries that allows programmers to interact with the smart contract deployed on the blockchain.
+    It allows, for examples, to gather blockchain data and send transactions.
+*/
 async function initWeb3() {
-    if (typeof web3 !== 'undefined') {
-        //If a web3 instance is already provided by Meta Mask.
-        console.log("DENTRO");
-        web3 = new Web3(new Web3.currentProvider);
-    } 
-    else {
-        //Specify default instance if no web3 instance provided
-        web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:7545"));
-    }
+    const ethNetwork = 'https://ropsten.infura.io/v3/3717c0649f8e41fa8b57738c452831a9';
+    web3 = new Web3(new Web3.providers.HttpProvider(ethNetwork));
+    console.log("Web3 correctly initialized. Version: " + web3.version);
+
+    //fetch a balance to test the correct web3 initialization
+    web3.eth.getBalance('0x23B7241e2859eA79e9ba4b2c89b208cE57B8D63d', async (err, result) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        let balance = web3.utils.fromWei(result, "ether");
+        console.log("Account balance: " + balance + " ETH");
+    });
 } 
 
 async function getLastBlockNumber() {
-    const latestBlockNumber = await web3.eth.getBlock("latest")
-    console.log(latestBlockNumber)
-    return latestBlockNumber
+    const latestBlockNumber = await web3.eth.getBlock("latest");
+    console.log("Latest block number: " + latestBlockNumber.number);
+    return latestBlockNumber;
 }
 
+//initialize the SKR smart contract
 function initContracts() {
     var contractAbi= [
     {
@@ -297,24 +306,7 @@ function initContracts() {
 ];
     var contractAddress='0xdf3f210158Cc1ff6910C15BCaB0b851Ac8f38f76';
     var contract= new web3.eth.Contract(contractAbi, contractAddress);
-    
     console.log("Contract correctly initiated. Contract address: " + contract.options.address);
-
-    web3.eth.getBalance("0x23B7241e2859eA79e9ba4b2c89b208cE57B8D63d", function(err, result) {
-        if (err) {
-            console.log(err)
-        } else {
-            console.log(web3.utils.fromWei(result, "ether") + " ETH")
-        }
-    })
-
-    // contract.methods.balanceOf("0x23B7241e2859eA79e9ba4b2c89b208cE57B8D63d").call(function(err, res) {
-    // if (err) {
-    //     console.log("An error occured", err);
-    //     return
-    // }
-    //     console.log("The balance is: ",res)
-    // });
 }
 
 //get request to render the page send-token.ejs

@@ -1,6 +1,6 @@
 /*
-  Contract which handles the migration whenever we deploy
-  the smart contract to the blockchain.
+ * Contract which handles the migration whenever we deploy
+ * the smart contract to the blockchain
 */
 pragma solidity >=0.4.22 <0.9.0;
 

@@ -1,4 +1,4 @@
-/**
+/*
  * Smart contract which is going to implement the ERC20
  * standard. It's going to be in charge of governing
  * the behavior of the cryptocurrency itself
@@ -41,8 +41,8 @@ contract SKR {
 	);
 
 
-	/**
-	 * Constructor which:
+	/*
+	 * constructor which:
 	 	* allocates the initial supply
 	 	* maps the key that is the address (msg.sender) with the value of the initial supply
 	 	* msg.sender corresponds to the account which deploys the contract
@@ -54,9 +54,7 @@ contract SKR {
 		totalSupply = _initialSupply; 
 	}
 
-	/**
-	 * Function which allows to transfer a certain amount of token (_value) to a recipient (_to)
-	*/
+	//function which allows to transfer a certain amount of token (_value) to a recipient (_to)
 	function transfer(address _to, uint256 _value) public returns(bool success){
 		//exception if the sender's account doesn't have enough tokens.
 		require(balanceOf[msg.sender] >= _value);
@@ -72,9 +70,7 @@ contract SKR {
 		return true;
 	}
 
-	/**
-	 * Function which allows _spender to withdraw from the owner's account multiple times, up to the _value amount
-	*/
+	//function which allows _spender to withdraw from the owner's account multiple times, up to the _value amount
 	function approve (address _spender, uint256 _value) public returns (bool success){
 		//set the allowance
 		allowance[msg.sender][_spender] = _value;
@@ -84,9 +80,8 @@ contract SKR {
 
 		return true;
 	}
-	/**
-	 * Function which transfers _value amount of tokens from address _from to address _to, and MUST fire the Transfer event
-	*/
+	
+	//function which transfers _value amount of tokens from address _from to address _to, and MUST fire the Transfer event
 	function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
 		//require _from has enough tokens
 		require(_value <= balanceOf[_from]);
@@ -114,8 +109,10 @@ contract SKR {
 		ipfsHash = x;
 	}
 
-	/*public function with mutability view, which means it can only view, not modify the Ethereum blockchain’s state and returns 
-	the hash stored in the variable ipfsHash.*/
+	/*
+	 * public function with mutability view, which means it can only view, not modify the Ethereum blockchain’s state and returns 
+	 * the hash stored in the variable ipfsHash
+	*/
 	function getHash() public view returns (string memory) {
 		return ipfsHash;
 	}
@@ -124,6 +121,4 @@ contract SKR {
 	function payStudent(address studentAddress, string memory hash, uint256 amount) {
 		transfer(studentAddress, amount);
 	}
-
-
 }

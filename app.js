@@ -1,6 +1,6 @@
-/**
- * Client-side Javascript for uploading a file to IPFS.
- */ 
+/*
+    Client-side Javascript for uploading a file to IPFS
+*/ 
 
 import { create } from 'ipfs-http-client';
 import ipfsAPI from 'ipfs-api';
@@ -23,8 +23,8 @@ ipfs.version((err, version) => {
         console.log('Your IPFS node is ready, version: ',version.version)
     });
 
+//configuration of express
 const app = express();
-
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(fileUpload());
@@ -77,7 +77,10 @@ app.post('/upload', (req, res) => {
 });
 
 const addFile = async (fileName, filePath) => {
-    //read the content of the file in the specified path. The return value is in the form of one of the allowed data formats to upload a file to IPFS
+    /*
+        read the content of the file in the specified path. 
+        The return value is in the form of one of the allowed data formats to upload a file to IPFS
+    */
     const fileContent = fs.readFileSync(filePath);
     console.log('File content: ', fileContent);
 
