@@ -26,6 +26,9 @@ contract SKR {
 	//ipfs hash which will be saved inside the blockchain
 	string public ipfsHash;
 
+	//owner of the contract
+	address owner;
+
 	//transfer event which is triggered when tokens are transferred
 	event Transfer(
 		address indexed _from,
@@ -45,13 +48,15 @@ contract SKR {
 	 * constructor which:
 	 	* allocates the initial supply
 	 	* maps the key that is the address (msg.sender) with the value of the initial supply
+	 	* set the owner as msg.sender
 	 	* msg.sender corresponds to the account which deploys the contract
 	 		*msg is a global variable that has several different values that we can read from
 	 		*sender is the address of who call the function
 	*/
 	constructor(uint256 _initialSupply) public {
 		balanceOf[msg.sender] = _initialSupply;
-		totalSupply = _initialSupply; 
+		totalSupply = _initialSupply;
+		owner = msg.sender;
 	}
 
 	//function which allows to transfer a certain amount of token (_value) to a recipient (_to)
@@ -102,7 +107,7 @@ contract SKR {
 		return true;	
 	}
 
-	//_______________IPFS hash integration_______________//
+	//_______________IPFS hash and student payment integration_______________//
 
 	//takes a string x as input and stores its value to the ipfsHash variable
 	function sendHash(string memory x) public {
@@ -117,8 +122,13 @@ contract SKR {
 		return ipfsHash;
 	}
 
-	//function which will manage the token sending
-	function payStudent(address studentAddress, string memory hash, uint256 amount) {
+	//once used on a function then only the mentioned caller can call this function
+	modifier _ownerOnly() {
+      require(msg.sender == owner);
+  	}
+
+	//function which will manage the token payment
+	function payStudent(address studentAddress, string memory hash, uint256 amount) public _ownerOnly {
 		transfer(studentAddress, amount);
 	}
 }
