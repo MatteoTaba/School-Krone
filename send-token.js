@@ -12,6 +12,8 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 
 var web3;
+//address of the account which uploaded the smart contract to the Ropsten test network
+var adminAddress = '0x23B7241e2859eA79e9ba4b2c89b208cE57B8D63d';
 
 /*
     To query the Ethereum blockchain, we will need access to an Ethereum node: with Web3.js we can connect to our own node or an 
@@ -25,13 +27,13 @@ async function initWeb3() {
     console.log("Web3 correctly initialized. Version: " + web3.version);
 
     //fetch a balance to test the correct web3 initialization
-    web3.eth.getBalance('0x23B7241e2859eA79e9ba4b2c89b208cE57B8D63d', async (err, result) => {
+    web3.eth.getBalance(adminAddress, async (err, result) => {
         if (err) {
             console.log(err);
             return;
         }
         let balance = web3.utils.fromWei(result, "ether");
-        console.log("Account balance: " + balance + " ETH");
+        console.log("Account balance (ETH): " + balance + " ETH");
     });
 } 
 
@@ -42,7 +44,7 @@ async function getLastBlockNumber() {
 }
 
 //initialize the SKR smart contract
-function initContracts() {
+async function initContracts() {
     var contractAbi= [
     {
         "inputs": [
@@ -304,9 +306,20 @@ function initContracts() {
         "type": "function"
     }
 ];
+
     var contractAddress='0xdf3f210158Cc1ff6910C15BCaB0b851Ac8f38f76';
     var contract= new web3.eth.Contract(contractAbi, contractAddress);
     console.log("Contract correctly initiated. Contract address: " + contract.options.address);
+
+    const tokenName = await contract.methods.name().call();
+    console.log("Token name: " + tokenName.toString());
+
+    const tokenSymbol = await contract.methods.symbol().call();
+    console.log("Token symbol: " + tokenSymbol.toString());
+
+    //const decimals = await contract.methods.balanceOf(walletAddress);
+    const balance = await contract.methods.balanceOf(adminAddress).call();
+    console.log("Account balance (SKR): " + balance.toString() + " SKR");
 }
 
 //get request to render the page send-token.ejs

@@ -2,6 +2,7 @@
   "name": "skr",
   "version": "1.0.0",
   "description": "School Krone",
+  "type": "module",
   "main": "app.js",
   "directories": {
     "test": "test"

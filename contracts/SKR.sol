@@ -28,7 +28,7 @@ contract SKR {
 	string public ipfsHash;
 
 	//owner of the contract
-	address owner;
+	address public owner;
 
 	//struct which represents the teacher information
 	struct Teacher {

@@ -18,7 +18,7 @@ contract('TestToken', function(accounts) {
 		}).then(function(symbol){
 			assert.equal(symbol, 'SKR', 'has the correct symbol');
 		});
-	})
+	});
 
 	it('allocates the initial supply upon deployment', function() {
 		return TestToken.deployed().then(function(instance){
