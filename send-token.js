@@ -5,47 +5,21 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import Web3 from 'web3';
+import fileUpload from 'express-fileupload';
 
 //configuration of express
 const app = express();
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+app.use(fileUpload());
 
 var web3;
 //address of the account which uploaded the smart contract to the Ropsten test network
 var adminAddress = '0x23B7241e2859eA79e9ba4b2c89b208cE57B8D63d';
-
-/*
-    To query the Ethereum blockchain, we will need access to an Ethereum node: with Web3.js we can connect to our own node or an 
-    existing node (we'll use Infura). 
-    Web3.js is a collection of libraries that allows programmers to interact with the smart contract deployed on the blockchain.
-    It allows, for examples, to gather blockchain data and send transactions.
-*/
-async function initWeb3() {
-    const ethNetwork = 'https://ropsten.infura.io/v3/3717c0649f8e41fa8b57738c452831a9';
-    web3 = new Web3(new Web3.providers.HttpProvider(ethNetwork));
-    console.log("Web3 correctly initialized. Version: " + web3.version);
-
-    //fetch a balance to test the correct web3 initialization
-    web3.eth.getBalance(adminAddress, async (err, result) => {
-        if (err) {
-            console.log(err);
-            return;
-        }
-        let balance = web3.utils.fromWei(result, "ether");
-        console.log("Account balance (ETH): " + balance + " ETH");
-    });
-} 
-
-async function getLastBlockNumber() {
-    const latestBlockNumber = await web3.eth.getBlock("latest");
-    console.log("Latest block number: " + latestBlockNumber.number);
-    return latestBlockNumber;
-}
-
-//initialize the SKR smart contract
-async function initContracts() {
-    var contractAbi= [
+var studentAddress = '0x2a5CEBd83c3634Fa7992765EA44bc1982D97d7A9';
+var contractAddress='0xdf3f210158Cc1ff6910C15BCaB0b851Ac8f38f76';
+var contractAbi= [
     {
         "inputs": [
             {
@@ -307,8 +281,59 @@ async function initContracts() {
     }
 ];
 
-    var contractAddress='0xdf3f210158Cc1ff6910C15BCaB0b851Ac8f38f76';
-    var contract= new web3.eth.Contract(contractAbi, contractAddress);
+var contract;
+
+//get request to render the page send-token.ejs
+app.get('/', (req, res) => {
+    initWeb3();
+    getLastBlockNumber();
+    initContracts();
+    
+    res.render('send-token');
+});
+
+app.post('/token-payment', (req, res) => {
+    const teacherAddress = req.body.address;
+    console.log("Teacher address: " + teacherAddress);
+    const tokenAmount = req.body.tokenAmount;
+    console.log("Token amount: " + tokenAmount);
+
+    //sendToken(teacherAddress, studentAddress, tokenAmount);
+
+    res.render('payment');
+});
+
+/*
+    To query the Ethereum blockchain, we will need access to an Ethereum node: with Web3.js we can connect to our own node or an 
+    existing node (we'll use Infura). 
+    Web3.js is a collection of libraries that allows programmers to interact with the smart contract deployed on the blockchain.
+    It allows, for examples, to gather blockchain data and send transactions.
+*/
+async function initWeb3() {
+    const ethNetwork = 'https://ropsten.infura.io/v3/3717c0649f8e41fa8b57738c452831a9';
+    web3 = new Web3(new Web3.providers.HttpProvider(ethNetwork));
+    console.log("Web3 correctly initialized. Version: " + web3.version);
+
+    //fetch a balance to test the correct web3 initialization
+    web3.eth.getBalance(adminAddress, async (err, result) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        let balance = web3.utils.fromWei(result, "ether");
+        console.log("Account balance (ETH): " + balance + " ETH");
+    });
+} 
+
+async function getLastBlockNumber() {
+    const latestBlockNumber = await web3.eth.getBlock("latest");
+    console.log("Latest block number: " + latestBlockNumber.number);
+    return latestBlockNumber;
+}
+
+//initialize the SKR smart contract
+async function initContracts() {
+    contract= new web3.eth.Contract(contractAbi, contractAddress);
     console.log("Contract correctly initiated. Contract address: " + contract.options.address);
 
     const tokenName = await contract.methods.name().call();
@@ -322,15 +347,11 @@ async function initContracts() {
     console.log("Account balance (SKR): " + balance.toString() + " SKR");
 }
 
-//get request to render the page send-token.ejs
-app.get('/', (req, res) => {
-    initWeb3();
-    getLastBlockNumber();
-    initContracts();
-    
-    res.render('send-token');
-});
-
+async function sendToken(senderAddress, recipientAddress, amount) {
+    contract.methods.transfer(recipientAddress, amount).send( {from: senderAddress} ).then(receipt => {
+        console.log(receipt)
+    });
+}
 
 app.listen(3000, () => {
     console.log('Server is listening on port 3000');
