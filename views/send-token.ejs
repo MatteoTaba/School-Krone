@@ -17,17 +17,18 @@
                 <div class="card-body">
                     <form action="/token-payment" method="POST" enctype="multipart/form-data">
                         <div class="form-group">
-                            <p> This page allows a teacher to send "School Krone" (SKR) to students.</p>
+                            <p> This page allows a teacher to send "School Krone" (SKR) to students.
+                                You still have <%= SKRBalance %> SKR available.</p>
                             <p> Please insert:</p>
                             <label for="address">- your wallet address</label>
-                            <input type="text" class="form-control" id="address" placeholder="Wallet Address" name="address" maxlength="42" required>
+                            <input type="text" class="form-control" id="address" placeholder="Wallet Address" name="address" maxlength="42" >
                         </div>
                         
                         <div class="form-group">
                             <form>
                                 <label>- the amount of tokens you wish to send</label>
                                 <br>
-                                <input type="number" name="tokenAmount" required></input>
+                                <input type="number" name="tokenAmount" ></input>
                                 <input type="submit" value="Send Tokens">
                             </form>
                         </div>
