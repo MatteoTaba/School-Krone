@@ -19,7 +19,7 @@ app.use(fileUpload());
 
 var adminAddress = '0x23B7241e2859eA79e9ba4b2c89b208cE57B8D63d';
 var studentAddress = '0x2a5CEBd83c3634Fa7992765EA44bc1982D97d7A9';
-
+var polAddress = '0xFf794Ba8842734A27C7D7c1CB8D16356D8755248';
 
 /*_____________________________________INITIALIZE WEB3_____________________________________
     To query the Ethereum blockchain, we will need access to an Ethereum node: with Web3.js we can connect to our own 
@@ -336,7 +336,7 @@ app.post('/token-payment', (req, res) => {
     const tokenAmount = req.body.tokenAmount;
     console.log("Token amount: " + tokenAmount);
 
-    sendToken(teacherAddress, studentAddress, tokenAmount);
+    const transactionHash = sendToken(adminAddress, studentAddress, 20);
 
     res.render('payment', { SKRBalance });
 });
@@ -346,45 +346,46 @@ async function sendToken(senderAddress, recipientAddress, amount) {
     var count = await web3.eth.getTransactionCount(adminAddress);
     console.log("Count: " + count);
 
-    //CHECK
-    var data = await contract.methods.transfer(studentAddress, 10);
+    var data = await contract.methods.transfer(recipientAddress, amount).encodeABI();
     console.log("Data: " + data);
 
-    var gasPrice = 2000000000000;
+    //CHECK
+    var gasPrice = web3.utils.toHex(2 * 1e9);
     console.log("Gas price: " + gasPrice);
 
-    var gasLimit = 90000;
+    //CHECK
+    var gasLimit = web3.utils.toHex(90000);
     console.log("Gas limit: " + gasLimit);
 
+    //CHECK NONCE VALUE
     var rawTransaction = {
         "from": adminAddress,
         "nonce": web3.utils.toHex(count),
-        "gasPrice": web3.utils.toHex(gasPrice),
-        "gasLimit": web3.utils.toHex(gasLimit),
-        "to": studentAddress,
+        "gasPrice": gasPrice,
+        "gasLimit": gasLimit,
+        "to": contractAddress,
         "value": "0x0",
         "data": data,
         "chainId": 0x03
     };
     
+    //IS IT OK TO HAVE IT AS A PLAINTEXT?
     const privKey = Buffer.from('7157b66ca33f38a2e3a8dc416feac6eb72dd198d65d6d42ede1aeb33334d1cd7', 'hex');
 
-    //var tx = new Transaction(rawTransaction);
-     //console.log("Transaction: " + tx);
+    var tx = new Transaction(rawTransaction, { chain: 'ropsten' });
+    console.log("Transaction: " + tx);
+    tx.sign(privKey);
+    var serializedTx = tx.serialize();
+    console.log("Serialized transaction: " + serializedTx.toString('hex'));
 
-// tx.sign(privKey);
-// var serializedTx = tx.serialize();
-
-// web3.eth.sendRawTransaction('0x' + serializedTx.toString('hex'), function(err, hash) {
-//   if (!err)
-//       console.log(hash);
-//   else
-//       console.log(err);
-// });
-    // await contract.methods.transfer(recipientAddress, amount).send( {from: senderAddress} ).then(receipt => {
-    //     console.log(receipt);
-    //     console.log("Fatto");
-    // });
+    web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'), function(err, hash) {
+        if (!err) { 
+            console.log("Hash: " + hash);
+            //return hash? 
+        }  
+        else
+            console.log(err);
+    });
 }
 
 app.listen(3000, () => {
