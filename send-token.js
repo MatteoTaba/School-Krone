@@ -17,9 +17,9 @@ app.use(bodyParser.json());
 app.use(fileUpload());
 
 
-var adminAddress = '0x23B7241e2859eA79e9ba4b2c89b208cE57B8D63d';
-var studentAddress = '0x2a5CEBd83c3634Fa7992765EA44bc1982D97d7A9';
-var polAddress = '0xFf794Ba8842734A27C7D7c1CB8D16356D8755248';
+const adminAddress = '0x23B7241e2859eA79e9ba4b2c89b208cE57B8D63d';
+const studentAddress = '0x2a5CEBd83c3634Fa7992765EA44bc1982D97d7A9';
+const polAddress = '0xFf794Ba8842734A27C7D7c1CB8D16356D8755248';
 
 /*_____________________________________INITIALIZE WEB3_____________________________________
     To query the Ethereum blockchain, we will need access to an Ethereum node: with Web3.js we can connect to our own 
@@ -326,7 +326,7 @@ app.get('/', (req, res) => {
     res.render('send-token', { SKRBalance });
 });
 
-
+//post request to send the tokens
 app.post('/token-payment', (req, res) => {
     //get the address of the teacher
     const teacherAddress = req.body.address;
@@ -336,13 +336,15 @@ app.post('/token-payment', (req, res) => {
     const tokenAmount = req.body.tokenAmount;
     console.log("Token amount: " + tokenAmount);
 
-    const transactionHash = sendToken(adminAddress, studentAddress, 20);
+    //ONCE IT'S OK IT WILL BE sendToken(teacherAddress, studentAddress, tokenAmount);
+    sendToken(adminAddress, studentAddress, 10);
 
-    res.render('payment', { SKRBalance });
+    res.render('payment');
 });
 
 async function sendToken(senderAddress, recipientAddress, amount) {
 
+    //HOW TO SET IT UP? SHOULD I USE SENDER ADDRESS INSTEAD OF ADMIN ADDRESS?
     var count = await web3.eth.getTransactionCount(adminAddress);
     console.log("Count: " + count);
 
@@ -357,9 +359,9 @@ async function sendToken(senderAddress, recipientAddress, amount) {
     var gasLimit = web3.utils.toHex(90000);
     console.log("Gas limit: " + gasLimit);
 
-    //CHECK NONCE VALUE
+    //CHECK NONCE AND FROM VALUE
     var rawTransaction = {
-        "from": adminAddress,
+        "from": senderAddress,
         "nonce": web3.utils.toHex(count),
         "gasPrice": gasPrice,
         "gasLimit": gasLimit,
@@ -373,15 +375,15 @@ async function sendToken(senderAddress, recipientAddress, amount) {
     const privKey = Buffer.from('7157b66ca33f38a2e3a8dc416feac6eb72dd198d65d6d42ede1aeb33334d1cd7', 'hex');
 
     var tx = new Transaction(rawTransaction, { chain: 'ropsten' });
-    console.log("Transaction: " + tx);
     tx.sign(privKey);
     var serializedTx = tx.serialize();
     console.log("Serialized transaction: " + serializedTx.toString('hex'));
 
+    //ONCE IT'S OK WE'LL USE THE PAYSTUDENT FUNCTION OF THE CONTRACT AND PROBABLY CHECK IF THE TEACHER IS ALLOWED
     web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'), function(err, hash) {
         if (!err) { 
             console.log("Hash: " + hash);
-            //return hash? 
+            return hash;
         }  
         else
             console.log(err);
