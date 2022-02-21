@@ -8,6 +8,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import fileUpload from 'express-fileupload';
 import { Buffer } from 'buffer';
+import toBuffer from 'it-to-buffer';
 
 //library for interacting with files
 import fs from 'fs';
@@ -89,10 +90,12 @@ const addFile = async (fileName, filePath) => {
     console.log('Your file on IPFS: ', fileAdded);
     
     //return the CID of the file
-    const fileHash = fileAdded.cid;
-    console.log('Your hash on IPFS: ', fileHash);
+    const bufferedContents = await toBuffer(ipfs.cat(fileAdded));
+    console.log('Your buffer: ', bufferedContents);
+    const stringHash = bufferedContents.toString();
+    console.log('Your hash on IPFS: ', stringHash);
 
-    return fileHash;
+    return stringHash;
 };
 
 app.listen(3000, () => {
