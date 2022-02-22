@@ -89,13 +89,8 @@ const addFile = async (fileName, filePath) => {
     const fileAdded = await ipfs.add({ path: fileName, content: fileContent });
     console.log('Your file on IPFS: ', fileAdded);
     
-    //return the CID of the file
-    const bufferedContents = await toBuffer(ipfs.cat(fileAdded));
-    console.log('Your buffer: ', bufferedContents);
-    const stringHash = bufferedContents.toString();
-    console.log('Your hash on IPFS: ', stringHash);
-
-    return stringHash;
+   //return CID of the file
+    return fileAdded[0].hash;
 };
 
 app.listen(3000, () => {
