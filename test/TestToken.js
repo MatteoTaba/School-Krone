@@ -119,4 +119,16 @@ contract('TestToken', function(accounts) {
 		});
 	}); 
 
+	it('test the allowed teachers', function() {
+		return TestToken.deployed().then(function (instance) {
+			tokenInstance = instance;
+			teacherAddress = accounts[1];
+			studentAddress = accounts[2];
+			return tokenInstance.addTeacher(teacherAddress);
+		}).then(function(receipt) {
+			tokenInstance.verifyTeacher(teacherAddress);
+		}).then(function(receipt) {
+			return tokenInstance.payStudent(studentAddress, 10);
+		});
+	});
 });

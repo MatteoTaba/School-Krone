@@ -30,14 +30,8 @@ contract SKR {
 	//owner of the contract
 	address public owner;
 
-	//struct which represents the teacher information
-	struct Teacher {
-		string name;
-		address teacherAddress;
-	}
-
-	//array of teachers allowed to send tokens to the students
-	Teacher[] public teachers;
+	//this mapping receive the teacher and return if he is allowed or not
+	mapping(address => bool) allowedTeachers;
 
 	//transfer event which is triggered when tokens are transferred
 	event Transfer(
@@ -117,59 +111,30 @@ contract SKR {
 		return true;	
 	}
 
-	//_______________IPFS hash and student payment integration_______________//
-
-	//takes a string x as input and stores its value to the ipfsHash variable
-	function sendHash(string memory _x) public {
-		ipfsHash = _x;
-	}
-
-	/*
-	 * public function with mutability view, which means it can only view, not modify the Ethereum blockchain’s state and returns 
-	 * the hash stored in the variable ipfsHash
-	*/
-	function getHash() public view returns (string memory) {
-		return ipfsHash;
-	}
+	//_______________Student payment integration_______________//
 
 	modifier _ownerOnly() {
-		require(msg.sender == owner); 
+		require(msg.sender == owner, "Ownable: caller is not the owner"); 
       _;
 	}
 
 	//once used on a function then only the mentioned caller can call this function
-	modifier _allowedOnly() {
-      require(msg.sender == owner || (msg.sender != owner && isAnAllowedTeacher(msg.sender) == true));
+	modifier _allowedOnly(address _address) {
+      require((msg.sender == owner || allowedTeachers[_address]), "You need to be allowed");
       _;
   	}
 
-  	function addTeacher(string memory _teacherName, address _teacherAddress) public _ownerOnly {
-  		teachers.push(Teacher(_teacherName, _teacherAddress));
+  	function addTeacher(address _teacherAddress) public _ownerOnly {
+  		allowedTeachers[_teacherAddress] = true;
   	}
 
-  	function getTeacherName(Teacher memory _teacher) public pure returns (string memory) {
-  		return _teacher.name;
-  	}
-  	function getTeacherAddress(Teacher memory _teacher) public pure returns (address) {
-      return _teacher.teacherAddress;
-   	}
-
-  	function isAnAllowedTeacher(address _teacherAddress) public view returns (bool) {
-  		bool isPresent;
-  		for (uint i = 0; i < teachers.length; i++) {
-            if (_teacherAddress == getTeacherAddress(teachers[i])) {
-                isPresent = true;
-                break;
-            }
-            else {
-            	isPresent = false;
-            }
-        }
-        return isPresent;
+  	function verifyTeacher(address _teacherAddress) public view returns (bool success) {
+  		bool isTeacherAllowed = allowedTeachers[_teacherAddress];
+  		return isTeacherAllowed;
   	}
 
 	//function which will manage the token payment
-	function payStudent(address _studentAddress, string memory _hash, uint256 _amount) public _allowedOnly {
+	function payStudent(address _studentAddress, uint256 _amount) public _allowedOnly(msg.sender) {
 		transfer(_studentAddress, _amount);
 	}
 }
