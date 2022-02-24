@@ -123,12 +123,19 @@ contract('TestToken', function(accounts) {
 		return TestToken.deployed().then(function (instance) {
 			tokenInstance = instance;
 			teacherAddress = accounts[1];
+			notAllowedAddress = accounts[3];
 			studentAddress = accounts[2];
 			return tokenInstance.addTeacher(teacherAddress);
 		}).then(function(receipt) {
 			tokenInstance.verifyTeacher(teacherAddress);
 		}).then(function(receipt) {
-			return tokenInstance.payStudent(studentAddress, 10);
-		});
+			return tokenInstance.payStudent(studentAddress, 10, {from: notAllowedAddress} );
+		}).then(assert.fail).catch(function(error) {
+			assert(error.message.toString().indexOf('revert') >= 0, 'this teacher is not allowed');
+		}).then(function(receipt) {
+			return tokenInstance.payStudent(studentAddress, 10, {from: teacherAddress} );
+		}).then(function(receipt) {
+			return tokenInstance.balanceOf(studentAddress);
+		})
 	});
 });
