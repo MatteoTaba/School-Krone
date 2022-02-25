@@ -134,7 +134,7 @@ contract SKR {
   	}
 
 	//function which will manage the token payment
-	function payStudent(address _studentAddress, uint256 _amount) public _allowedOnly(msg.sender) {
+	function payStudent(address _studentAddress, string memory _hash, uint256 _amount) public _allowedOnly(msg.sender) {
 		transfer(_studentAddress, _amount);
 	}
 }

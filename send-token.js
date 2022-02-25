@@ -44,8 +44,21 @@ web3.eth.getBalance(adminAddress, async (err, result) => {
 
 //_____________________________________INITIALIZE SKR SMART CONTRACT_____________________________________
 
-var contractAddress='0xdf3f210158Cc1ff6910C15BCaB0b851Ac8f38f76';
+var contractAddress='0xAaf1e1773f039D54F7EcDFdb8Ba79872455E76d1';
 var contractAbi= [
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_teacherAddress",
+                "type": "address"
+            }
+        ],
+        "name": "addTeacher",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
     {
         "inputs": [
             {
@@ -83,6 +96,77 @@ var contractAbi= [
         "type": "event"
     },
     {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_spender",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_value",
+                "type": "uint256"
+            }
+        ],
+        "name": "approve",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "success",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_studentAddress",
+                "type": "address"
+            },
+            {
+                "internalType": "string",
+                "name": "_hash",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "payStudent",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_to",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_value",
+                "type": "uint256"
+            }
+        ],
+        "name": "transfer",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "success",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
         "anonymous": false,
         "inputs": [
             {
@@ -106,6 +190,35 @@ var contractAbi= [
         ],
         "name": "Transfer",
         "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_from",
+                "type": "address"
+            },
+            {
+                "internalType": "address",
+                "name": "_to",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "_value",
+                "type": "uint256"
+            }
+        ],
+        "name": "transferFrom",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "success",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
     },
     {
         "inputs": [
@@ -135,30 +248,6 @@ var contractAbi= [
         "inputs": [
             {
                 "internalType": "address",
-                "name": "_spender",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_value",
-                "type": "uint256"
-            }
-        ],
-        "name": "approve",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "success",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
                 "name": "",
                 "type": "address"
             }
@@ -169,19 +258,6 @@ var contractAbi= [
                 "internalType": "uint256",
                 "name": "",
                 "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "getHash",
-        "outputs": [
-            {
-                "internalType": "string",
-                "name": "",
-                "type": "string"
             }
         ],
         "stateMutability": "view",
@@ -214,16 +290,16 @@ var contractAbi= [
         "type": "function"
     },
     {
-        "inputs": [
+        "inputs": [],
+        "name": "owner",
+        "outputs": [
             {
-                "internalType": "string",
-                "name": "x",
-                "type": "string"
+                "internalType": "address",
+                "name": "",
+                "type": "address"
             }
         ],
-        "name": "sendHash",
-        "outputs": [],
-        "stateMutability": "nonpayable",
+        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -256,16 +332,11 @@ var contractAbi= [
         "inputs": [
             {
                 "internalType": "address",
-                "name": "_to",
+                "name": "_teacherAddress",
                 "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_value",
-                "type": "uint256"
             }
         ],
-        "name": "transfer",
+        "name": "verifyTeacher",
         "outputs": [
             {
                 "internalType": "bool",
@@ -273,36 +344,7 @@ var contractAbi= [
                 "type": "bool"
             }
         ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_from",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "_to",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_value",
-                "type": "uint256"
-            }
-        ],
-        "name": "transferFrom",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "success",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "nonpayable",
+        "stateMutability": "view",
         "type": "function"
     }
 ];
@@ -320,6 +362,7 @@ console.log("Token symbol: " + tokenSymbol.toString());
 var SKRBalance = await contract.methods.balanceOf(adminAddress).call();
 console.log("Account balance (SKR): " + SKRBalance.toString() + " SKR");
 
+const studentIPFSHash = 'QmXJuLjAwtDL35n9tWgWAtrRvqFB9ci8ReXpWyv4kduuRC';
 
 //get request to render the page send-token.ejs
 app.get('/', (req, res) => {
@@ -332,12 +375,14 @@ app.post('/token-payment', (req, res) => {
     const teacherAddress = req.body.address;
     console.log("Teacher address: " + teacherAddress);
 
+    const studentAddress = req.body.sAddress;
+    console.log("Student address: " + studentAddress);
+
     //get the amount of token to send
     const tokenAmount = req.body.tokenAmount;
     console.log("Token amount: " + tokenAmount);
 
-    //ONCE IT'S OK IT WILL BE sendToken(teacherAddress, studentAddress, tokenAmount);
-    sendToken(adminAddress, studentAddress, 10);
+    sendToken(teacherAddress, studentAddress, tokenAmount);
 
     res.render('payment');
 });
@@ -348,7 +393,7 @@ async function sendToken(senderAddress, recipientAddress, amount) {
     var count = await web3.eth.getTransactionCount(adminAddress);
     console.log("Count: " + count);
 
-    var data = await contract.methods.transfer(recipientAddress, amount).encodeABI();
+    var data = await contract.methods.payStudent(recipientAddress, studentIPFSHash, amount).encodeABI();
     console.log("Data: " + data);
 
     //CHECK
@@ -379,7 +424,6 @@ async function sendToken(senderAddress, recipientAddress, amount) {
     var serializedTx = tx.serialize();
     console.log("Serialized transaction: " + serializedTx.toString('hex'));
 
-    //ONCE IT'S OK WE'LL USE THE PAYSTUDENT FUNCTION OF THE CONTRACT AND PROBABLY CHECK IF THE TEACHER IS ALLOWED
     web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'), function(err, hash) {
         if (!err) { 
             console.log("Hash: " + hash);
