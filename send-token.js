@@ -6,7 +6,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import Web3 from 'web3';
 import fileUpload from 'express-fileupload';
-import {Transaction} from 'ethereumjs-tx';
+import { Transaction } from 'ethereumjs-tx';
 import { Buffer } from 'buffer';
 
 //_____________________________________CONFIGURATION OF EXPRESS_____________________________________

@@ -7,8 +7,6 @@ import ipfsAPI from 'ipfs-api';
 import express from 'express';
 import bodyParser from 'body-parser';
 import fileUpload from 'express-fileupload';
-import { Buffer } from 'buffer';
-import toBuffer from 'it-to-buffer';
 
 //library for interacting with files
 import fs from 'fs';
