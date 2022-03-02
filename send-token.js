@@ -362,6 +362,7 @@ console.log("Token symbol: " + tokenSymbol.toString());
 var SKRBalance = await contract.methods.balanceOf(adminAddress).call();
 console.log("Account balance (SKR): " + SKRBalance.toString() + " SKR");
 
+//PRENDERE DALLA STRUTTURA DATI
 const studentIPFSHash = 'QmXJuLjAwtDL35n9tWgWAtrRvqFB9ci8ReXpWyv4kduuRC';
 
 //get request to render the page send-token.ejs
@@ -389,34 +390,30 @@ app.post('/token-payment', (req, res) => {
 
 async function sendToken(senderAddress, recipientAddress, amount) {
 
-    //HOW TO SET IT UP? SHOULD I USE SENDER ADDRESS INSTEAD OF ADMIN ADDRESS?
-    var count = await web3.eth.getTransactionCount(adminAddress);
+    var count = await web3.eth.getTransactionCount(senderAddress, 'pending');
     console.log("Count: " + count);
 
     var data = await contract.methods.payStudent(recipientAddress, studentIPFSHash, amount).encodeABI();
     console.log("Data: " + data);
 
-    //CHECK
-    var gasPrice = web3.utils.toHex(2 * 1e9);
+    //gas price and gas limit in test networks is always constant
+    const gasPrice = 2 * 1e9;
     console.log("Gas price: " + gasPrice);
 
-    //CHECK
-    var gasLimit = web3.utils.toHex(90000);
+    const gasLimit = 90000;
     console.log("Gas limit: " + gasLimit);
 
-    //CHECK NONCE AND FROM VALUE
     var rawTransaction = {
         "from": senderAddress,
         "nonce": web3.utils.toHex(count),
-        "gasPrice": gasPrice,
-        "gasLimit": gasLimit,
+        "gasPrice": web3.utils.toHex(gasPrice),
+        "gasLimit": web3.utils.toHex(gasLimit),
         "to": contractAddress,
         "value": "0x0",
         "data": data,
         "chainId": 0x03
     };
     
-    //IS IT OK TO HAVE IT AS A PLAINTEXT?
     const privKey = Buffer.from('7157b66ca33f38a2e3a8dc416feac6eb72dd198d65d6d42ede1aeb33334d1cd7', 'hex');
 
     var tx = new Transaction(rawTransaction, { chain: 'ropsten' });
