@@ -1,5 +1,5 @@
 /*
-  - require function allows to read the SchoolKrone and SchoolKroneSale contracts in solidity from the project directory 
+  - require function allows to read the SchoolKrone contract in solidity from the project directory 
   - we assign this to a variable (SchoolKrone and SKRSale) that we'll deploy in the next step
   - artifacts creates a contract abstraction that truffle can use to run in a JS runtime environment such as the truffle console
 */
