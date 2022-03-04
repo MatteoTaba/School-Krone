@@ -24,9 +24,6 @@ contract SKR {
 	//symbol of the token
 	string public symbol = "SKR";
 
-	//ipfs hash which will be saved inside the blockchain
-	string public ipfsHash;
-
 	//owner of the contract
 	address public owner;
 
@@ -124,10 +121,12 @@ contract SKR {
       _;
   	}
 
+  	//function to add a teacher to the list (only the contract owner can do that)
   	function addTeacher(address _teacherAddress) public _ownerOnly {
   		allowedTeachers[_teacherAddress] = true;
   	}
 
+  	//verify if a teacher is in the list
   	function verifyTeacher(address _teacherAddress) public view returns (bool success) {
   		bool isTeacherAllowed = allowedTeachers[_teacherAddress];
   		return isTeacherAllowed;
