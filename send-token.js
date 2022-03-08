@@ -8,6 +8,7 @@ import Web3 from 'web3';
 import fileUpload from 'express-fileupload';
 import { Transaction } from 'ethereumjs-tx';
 import { Buffer } from 'buffer';
+import mysql from 'mysql';
 
 //_____________________________________CONFIGURATION OF EXPRESS_____________________________________
 const app = express();
@@ -16,6 +17,14 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(fileUpload());
 
+//database configuration
+const pool  = mysql.createPool({
+    connectionLimit : 10,
+    host            : 'localhost',
+    user            : 'root',
+    password        : '',
+    database        : 'students_files'
+});
 
 const adminAddress = '0x23B7241e2859eA79e9ba4b2c89b208cE57B8D63d';
 const studentAddress = '0x2a5CEBd83c3634Fa7992765EA44bc1982D97d7A9';
@@ -362,12 +371,23 @@ console.log("Token symbol: " + tokenSymbol.toString());
 var SKRBalance = await contract.methods.balanceOf(adminAddress).call();
 console.log("Account balance (SKR): " + SKRBalance.toString() + " SKR");
 
-//PRENDERE DALLA STRUTTURA DATI
-const studentIPFSHash = 'QmXJuLjAwtDL35n9tWgWAtrRvqFB9ci8ReXpWyv4kduuRC';
-
 //get request to render the page send-token.ejs
 app.get('/', (req, res) => {
-    res.render('send-token', { SKRBalance });
+     pool.getConnection((err, connection) => {
+        if(err) throw err
+            connection.query('SELECT * FROM students_files WHERE mark = 0', (err, rows) => {
+            connection.release() // return the connection to pool
+            if (!err) {
+                res.render('send-token', { SKRBalance, rows });
+            } else {
+                console.log(err)
+            }
+        
+        console.log('The data from the students table are: ', rows)
+
+            })
+        })
+   
 });
 
 //post request to send the tokens
@@ -376,19 +396,59 @@ app.post('/token-payment', (req, res) => {
     const teacherAddress = req.body.address;
     console.log("Teacher address: " + teacherAddress);
 
-    const studentAddress = req.body.sAddress;
-    console.log("Student address: " + studentAddress);
+    const studentAddressId = req.body.sAddress;
+    console.log("Student address ID: " + studentAddressId);
 
     //get the amount of token to send
     const tokenAmount = req.body.tokenAmount;
     console.log("Token amount: " + tokenAmount);
 
-    sendToken(teacherAddress, studentAddress, tokenAmount);
+    var studentAddress = "";
+    var studentIPFSHash = "";
+
+    pool.getConnection((err, connection) => {
+        if(err) throw err
+            connection.query('SELECT wallet_address, ipfs_hash FROM students_files WHERE id = ? ', [studentAddressId], (err, rows) => {
+            connection.release() // return the connection to pool
+
+            if (!err) {
+                studentAddress = rows[0].wallet_address;
+                studentIPFSHash = rows[0].ipfs_hash;
+                console.log('Student hash: ', studentIPFSHash);
+                console.log('Student address: ', studentAddress);
+                sendToken(teacherAddress, studentAddress, tokenAmount, studentIPFSHash);
+                
+            } else {
+                console.log(err);
+            }
+        
+        console.log('The data from the students table are: ', rows);
+
+            })
+        })
+
+    
+
+    pool.getConnection((err, connection) => {
+        if(err) throw err
+            connection.query('UPDATE students_files SET mark = 1 WHERE id = ?', [studentAddressId], (err, rows) => {
+            connection.release() // return the connection to pool
+
+            if (!err) {
+                console.log('Mark updated');
+            } else {
+                console.log(err)
+            }
+
+            })
+        });
 
     res.render('payment');
 });
 
-async function sendToken(senderAddress, recipientAddress, amount) {
+async function sendToken(senderAddress, recipientAddress, amount, studentIPFSHash) {
+
+    console.log('Student hash sendToken: ', studentIPFSHash);
 
     var count = await web3.eth.getTransactionCount(senderAddress, 'pending');
     console.log("Count: " + count);

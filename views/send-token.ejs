@@ -7,7 +7,13 @@
     <title>Send SKR</title>
 
     <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.0/css/bootstrap.min.css"/>
+
+    <!-- DEPENDENCIES -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
 </head>
 <body>
     <div class="container-fluid" id="cont" style="height:100vh;">
@@ -19,32 +25,86 @@
                         <div class="form-group">
                             <p> This page allows a teacher to send "School Krone" (SKR) to students.
                                 You still have <%= SKRBalance %> SKR available.</p>
-                            <p> Please insert:</p>
-                            <label for="address">- your wallet address</label>
-                            <input type="text" class="form-control" id="address" placeholder="Wallet Address" name="address" maxlength="42" >
-                            <label for="address">- wallet address of the student you wish to pay</label>
-                            <input type="text" class="form-control" id="address" placeholder="Student Address" name="sAddress" maxlength="42" >
-                        </div>
-                        
-                        <div class="form-group">
-                            <form>
-                                <label>- the amount of tokens you wish to send</label>
+                                <p> Please insert:</p>
+                                <label for="address">- your wallet address</label>
+                                <input type="text" class="form-control" id="address" placeholder="Wallet Address" name="address" maxlength="42" >
+                                <label for="address">- wallet address of the student you wish to pay</label>
                                 <br>
-                                <input type="number" name="tokenAmount" ></input>
-                                <input type="submit" value="Send Tokens">
-                            </form>
+                                <!-- Modal -->
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-xl">Open unpaid deliveries</button>
+
+                                <span id="students_info" style="visibility: hidden;">
+                                </span>
+
+                                <input type="hidden" class="form-control" id="student_address" placeholder="Wallet Address" name="sAddress" maxlength="42" >
+
+                                <div class="modal fade bd-example-modal-xl" id="modal" style="width: 100%;"tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-xl">
+                                        <div class="modal-content">
+                                          <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Unpaid deliveries</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                              <span aria-hidden="true">&times;</span>
+                                          </button>
+                                      </div>
+                                      <div class="modal-body">
+                                        <table class="table" id="table">
+                                          <thead>
+                                            <tr>
+                                                <th scope="col">ID</th>
+                                                <th scope="col">Name</th>
+                                                <th scope="col">Wallet Address</th>
+                                                <th scope="col">IPFS Hash</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% rows.forEach((item) => {%>
+                                            <tr id="<%= item.id %>" style="cursor: pointer;">
+                                                <td> <%= item.id %> </td>
+                                                <td name="name" id="<%= item.student_name %>"> <%= item.student_name %> </td>
+                                                <td> <%= item.wallet_address %> </td>
+                                                <td> <%= item.ipfs_hash %> </td>
+                                            </tr>
+                                            <% }) %>
+                                        </tbody>
+                                    </table>
+                                    <script type="text/javascript">
+                                        $("#table tr").click(function(){  
+                                            var name=$(this).find("td:eq(1)").text();
+                                            //alert(value);  
+                                            var id = $(this).attr("id");
+                                            $('#modal').modal('toggle'); 
+                                            $('#sAddress').html(id);
+                                            $('#students_info').html(name);
+                                            $("#student_address").val(id);
+                                            if ( $('#sAddress').css('visibility') == 'hidden' )
+                                                $('#sAddress').css('visibility','visible'); 
+                                            if ( $('#students_info').css('visibility') == 'hidden' )
+                                                $('#students_info').css('visibility','visible'); 
+                                        });
+
+                                    </script> 
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
                         </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <form>
+                        <label>- the amount of tokens you wish to send</label>
+                        <br>
+                        <input type="number" name="tokenAmount" ></input>
+                        <input type="submit" value="Send Tokens">
                     </form>
                 </div>
-            </div>            
-        </div>    
-    </div>
-
-    <!-- DEPENDENCIES -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+            </form>
+        </div>
+    </div>            
+</div>    
+</div>
 
 </body>
 </html>

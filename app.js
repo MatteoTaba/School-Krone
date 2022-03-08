@@ -7,6 +7,7 @@ import ipfsAPI from 'ipfs-api';
 import express from 'express';
 import bodyParser from 'body-parser';
 import fileUpload from 'express-fileupload';
+import mysql from 'mysql';
 
 //library for interacting with files
 import fs from 'fs';
@@ -28,13 +29,25 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(fileUpload());
 
+//database configuration
+const pool  = mysql.createPool({
+    connectionLimit : 10,
+    host            : 'localhost',
+    user            : 'root',
+    password        : '',
+    database        : 'students_files'
+});
+
 //get request to render the page home.ejs
 app.get('/', (req, res) => {
-    res.render('home');
+   res.render('home');
 });
 
 //post request to upload the file
 app.post('/upload', (req, res) => {
+    //get the student name
+    const studentName = req.body.name;
+    console.log("Student name: " + studentName);
     //get the wallet address
     const walletAddress = req.body.address;
     console.log("Wallet address: " + walletAddress);
@@ -69,8 +82,23 @@ app.post('/upload', (req, res) => {
             if(err) console.log(err);
         });
 
+        pool.getConnection((err, connection) => {
+            if(err) throw err
+        
+            connection.query('INSERT INTO students_files SET student_name = ?, wallet_address = ?, ipfs_hash = ?', [studentName, walletAddress, fileHashIPFS], (err, rows) => {
+            connection.release() // return the connection to pool
+            if (!err) {
+            console.log('Senza errori');
+            } else {
+                console.log(err)
+            }
+        
+        console.log('The data from beer table are:11 \n', rows)
+
+            })
+        })
         //render the upload page with the right accessible parameters
-        res.render('upload', { fileName, fileHashIPFS, walletAddress });
+        res.render('upload', { studentName, fileName, fileHashIPFS, walletAddress });
     });
 
 });

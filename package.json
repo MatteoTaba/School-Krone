@@ -33,6 +33,7 @@
     "ipfs-api": "^26.1.2",
     "ipfs-http-client": "^54.0.2",
     "it-to-buffer": "^2.0.2",
+    "mysql": "^2.18.1",
     "npm": "^8.2.0",
     "web3": "^1.7.0"
   }
