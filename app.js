@@ -8,11 +8,10 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import fileUpload from 'express-fileupload';
 import mysql from 'mysql';
-
-//library for interacting with files
 import fs from 'fs';
 
-//connect to IPFS daemon using default settings:localhost and port 5001
+//_____________________________________IPFS CONFIGURATION_____________________________________
+
 var ipfs = ipfsAPI('127.0.0.1', '5001', {protocol: 'http'});
 
 ipfs.version((err, version) => {
@@ -23,13 +22,15 @@ ipfs.version((err, version) => {
         console.log('Your IPFS node is ready, version: ',version.version)
     });
 
-//configuration of express
+//_____________________________________EXPRESS CONFIGURATION_____________________________________
+
 const app = express();
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(fileUpload());
 
-//database configuration
+//_____________________________________DATABASE CONFIGURATION_____________________________________
+
 const pool  = mysql.createPool({
     connectionLimit : 10,
     host            : 'localhost',
@@ -38,16 +39,19 @@ const pool  = mysql.createPool({
     database        : 'students_files'
 });
 
-//get request to render the page home.ejs
+//_____________________________________GET REQUEST TO RENDER THE PAGE HOME.EJS_____________________________________
+
 app.get('/', (req, res) => {
    res.render('home');
 });
 
-//post request to upload the file
+//_____________________________________POST REQUEST TO UPLOAD THE FILE_____________________________________
+
 app.post('/upload', (req, res) => {
     //get the student name
     const studentName = req.body.name;
     console.log("Student name: " + studentName);
+
     //get the wallet address
     const walletAddress = req.body.address;
     console.log("Wallet address: " + walletAddress);
@@ -82,26 +86,26 @@ app.post('/upload', (req, res) => {
             if(err) console.log(err);
         });
 
+        //insert student's data into the db
         pool.getConnection((err, connection) => {
             if(err) throw err
-        
-            connection.query('INSERT INTO students_files SET student_name = ?, wallet_address = ?, ipfs_hash = ?', [studentName, walletAddress, fileHashIPFS], (err, rows) => {
-            connection.release() // return the connection to pool
-            if (!err) {
-            console.log('Senza errori');
-            } else {
-                console.log(err)
-            }
-        
-        console.log('The data from beer table are:11 \n', rows)
-
+                connection.query('INSERT INTO students_files SET student_name = ?, wallet_address = ?, ipfs_hash = ?', [studentName, walletAddress, fileHashIPFS], (err, rows) => {
+                connection.release() 
+                if (!err) {
+                    console.log('Student entry successfully created');
+                } else {
+                    console.log(err)
+                }
             })
         })
+
         //render the upload page with the right accessible parameters
         res.render('upload', { studentName, fileName, fileHashIPFS, walletAddress });
     });
 
 });
+
+//_____________________________________FUNCTION WHICH ACTUALLY UPLOADS THE FILE TO IPFS_____________________________________
 
 const addFile = async (fileName, filePath) => {
     /*
@@ -115,7 +119,7 @@ const addFile = async (fileName, filePath) => {
     const fileAdded = await ipfs.add({ path: fileName, content: fileContent });
     console.log('Your file on IPFS: ', fileAdded);
     
-   //return CID of the file
+    //return CID of the file
     return fileAdded[0].hash;
 };
 
