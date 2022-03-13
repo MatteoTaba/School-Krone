@@ -4,13 +4,40 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible", content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>File uploaded</title>
+    <title>File Uploaded</title>
+
+    <!-- DEPENDENCIES -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital@1&family=Roboto:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+    <style>
+        body{
+           font-family: 'Roboto', sans-serif;
+        }
+        h1{
+            font-family: 'Montserrat', sans-serif;
+            margin-bottom: 1.3rem;
+        }
+    </style>
 </head>
 <body>
-	<h1> File Uploaded! </h1>
-    <p> Student name: <%= studentName %> </p>
-    <p> Wallet address: <%= walletAddress %> </p>
-    <p> File name: <%= fileName %> </p>
-    <p> Hash: <%= fileHashIPFS %> </p>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h1> File Uploaded Successfully</h1>
+                <p> <b> Student Name: </b> <%= studentName %> </p>
+                <p> <b> Wallet Address: </b> <%= walletAddress %> </p>
+                <p> <b> File Name: </b> <%= fileName %> </p>
+                <p> <b> Hash: </b> <%= fileHashIPFS %> </p>
+            </div>
+        </div>
+    </div>
+	
 </body>
 </html>

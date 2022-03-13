@@ -2,6 +2,7 @@
     Client-side Javascript for uploading a file to IPFS
 */ 
 
+import { create } from 'ipfs-http-client';
 import ipfsAPI from 'ipfs-api';
 import express from 'express';
 import bodyParser from 'body-parser';
